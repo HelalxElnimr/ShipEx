@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whatsapp_new/CalorsAndFields/ColorS.dart';
 import 'package:whatsapp_new/CalorsAndFields/Field.dart';
+import 'package:whatsapp_new/Core/service/Api.dart';
 import 'package:whatsapp_new/ScreensApp/HomePage.dart';
 import 'package:whatsapp_new/accountPage/LoginScreen.dart';
 
@@ -12,6 +13,16 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+
+
+
+  TextEditingController nameController=TextEditingController();
+  TextEditingController phoneController=TextEditingController();
+  TextEditingController userNameController=TextEditingController();
+  TextEditingController passwordController=TextEditingController();
+  TextEditingController confirmPasswordController=TextEditingController();
+
+
   @override
   bool isPasswordVisible = true;
   bool chekboxis = true;
@@ -39,10 +50,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   fontSize: 16,color: Color(0xff8EDEC5)),),
             ),
             SizedBox(height: MediaQuery.of(context).size.height/30,),
-             Field('Name',TextInputType.name,Icons.account_circle,SufxIcon: null,),
+             Field('User Name',TextInputType.name,Icons.account_circle,SufxIcon: null,textEditingController:userNameController,),
+             SizedBox(height: MediaQuery.of(context).size.height/40,),
+
+             Field('Name',TextInputType.name,Icons.account_circle,SufxIcon: null,textEditingController: nameController,),
             SizedBox(height: MediaQuery.of(context).size.height/40,),
             //Phone Number
-            Field('Phone number',TextInputType.phone,Icons.account_circle,SufxIcon: null,),
+            Field('Phone number',TextInputType.phone,Icons.account_circle,SufxIcon: null,textEditingController: phoneController,),
             SizedBox(height: MediaQuery.of(context).size.height/40,),
             //Password
             Field('Password',TextInputType.visiblePassword,Icons.https,isPasswordVisible: isPasswordVisible,
@@ -52,6 +66,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 });}
               ,SufxIcon:
               isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+              textEditingController: passwordController,
             ),
             SizedBox(height: MediaQuery.of(context).size.height/40,),
              Field('Confirm Password',TextInputType.visiblePassword,Icons.https,isPasswordVisible: isPasswordVisible,
@@ -61,18 +76,27 @@ class _SignupScreenState extends State<SignupScreen> {
                  });}
                ,SufxIcon:
                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+               textEditingController: confirmPasswordController,
              ),
             SizedBox(height: MediaQuery.of(context).size.height/30,),
             //LOGIN
             Padding(padding: const EdgeInsets.symmetric(horizontal: 40),
               child:GestureDetector(
                 onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
+
+                  Api api=Api();
+                  api.register(name:nameController.text,phone: phoneController.text,password: passwordController.text,userName: userNameController.text ).then((value){
+                    if(value==200){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(),
+                        ),
+                      );
+                    }
+
+                  });
+
                 },
                 child: Container(
                   height: 50,
@@ -98,6 +122,7 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: GestureDetector(
                 onTap: (){
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

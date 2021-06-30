@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_new/CalorsAndFields/ColorS.dart';
+import 'package:whatsapp_new/CalorsAndFields/Field.dart';
 
 class orderDetails extends StatefulWidget {
   @override
@@ -57,6 +59,65 @@ class _orderDetailsState extends State<orderDetails> {
                     Text('Time : ',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),),
                     Text('13:00   5/7/2021',style: TextStyle(fontSize: 18,color: primrycolor),),
                   ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Field(
+                        'Phone number',
+                        TextInputType.phone,
+                        Icons.account_circle,
+                        SufxIcon: null,
+                      ),
+                    ),
+                    Expanded(
+                      child: Field(
+                        'Phone number',
+                        TextInputType.phone,
+                        Icons.account_circle,
+                        SufxIcon: null,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 50,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+
+                          decoration: BoxDecoration(
+                            border: Border.all(color: primrycolor),
+                            image: DecorationImage(image: AssetImage("assets/LOGOcolor.png"))
+                          ),
+
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+
+                          decoration: BoxDecoration(
+                            border: Border.all(color: primrycolor),
+                            image: DecorationImage(image: AssetImage("assets/LOGOcolor.png"))
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+
+                          decoration: BoxDecoration(
+                            border: Border.all(color: primrycolor),
+                            image: DecorationImage(image: AssetImage("assets/LOGOcolor.png"))
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
                 )
               ],
             ),
