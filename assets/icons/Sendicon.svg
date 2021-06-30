@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="45.124" height="39" viewBox="0 0 45.124 39">
+  <g id="cargo-truck" transform="translate(16.73 9.621)">
+    <path id="Path_16" data-name="Path 16" d="M16.563,4.887V20.859a.894.894,0,0,1-.887.887H9.961a4.338,4.338,0,0,0,.095-.887,4.437,4.437,0,1,0-8.873,0,4.338,4.338,0,0,0,.095.887H.887A.894.894,0,0,1,0,20.859V4.887A.894.894,0,0,1,.887,4H15.676A.894.894,0,0,1,16.563,4.887Z" transform="translate(0 -4)" fill="#00e699"/>
+    <path id="Path_17" data-name="Path 17" d="M25.648,12.62v7.69a.894.894,0,0,1-.887.887h-.686a4.338,4.338,0,0,0,.095-.887,4.437,4.437,0,1,0-8.873,0,3.439,3.439,0,0,0,.071.71A.853.853,0,0,1,15,20.31V7.887A.894.894,0,0,1,15.887,7h4.141A5.625,5.625,0,0,1,25.648,12.62Z" transform="translate(2.746 -3.451)" fill="#00e699"/>
+    <path id="Path_18" data-name="Path 18" d="M19.5,22.007a3.253,3.253,0,1,1,3.253-3.253A3.256,3.256,0,0,1,19.5,22.007Z" transform="translate(2.975 -1.895)" fill="#00e699"/>
+    <path id="Path_19" data-name="Path 19" d="M5.253,22.007a3.253,3.253,0,1,1,3.253-3.253A3.256,3.256,0,0,1,5.253,22.007Z" transform="translate(0.366 -1.895)" fill="#00e699"/>
+    <g id="Group_17" data-name="Group 17" transform="translate(-16.73 -10.034)">
+      <ellipse id="Ellipse_9" data-name="Ellipse 9" cx="19" cy="19.5" rx="19" ry="19.5" transform="translate(0 0.413)" fill="#a5a5ac" opacity="0.1"/>
+    </g>
+  </g>
+</svg>
