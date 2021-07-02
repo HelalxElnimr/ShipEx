@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:whatsapp_new/accountPage/FromToScreen.dart';
 import 'package:whatsapp_new/accountPage/OrderDetails.dart';
+import 'package:whatsapp_new/accountPage/calculate_price.dart';
 import 'package:whatsapp_new/constantVariable.dart';
 import '../Extended/Color.dart';
 import '../Extended/Drawerr.dart';
@@ -24,6 +26,12 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
   int currentIndex = 0;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
 
+
+
+  Map<PolylineId, Polyline> polyline = {};
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints = PolylinePoints();
+  String googleAPiKey = "AIzaSyCIOsKC8hY4KBzB7AVNIzpBjXtFNxxc_38";
   Uint8List markerIcon;
   bool showFromTo=false;
 
@@ -42,7 +50,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
     return (await fi.image.toByteData(format: ui.ImageByteFormat.png)).buffer.asUint8List();
   }
 
-  Future<void> _addMarker(LatLng position) async {
+  Future<void> _addMarkerCurrentLocation(LatLng position) async {
     var markerIdVal = "marker";
     final MarkerId markerId = MarkerId(markerIdVal);
     markerIcon = await getBytesFromAsset('assets/002-map-marker.png', 100);
@@ -62,6 +70,31 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
       // adding a new marker to map
       markers[markerId] = marker;
     });
+    _getPolyline();
+  }
+
+
+  Future<void> _addMarkerTagetLocation(LatLng position) async {
+    var markerIdVal = "target";
+    final MarkerId markerId = MarkerId(markerIdVal);
+    markerIcon = await getBytesFromAsset('assets/002-map-marker.png', 100);
+    // creating a new MARKER
+    final Marker marker = Marker(
+      icon: BitmapDescriptor.fromBytes(markerIcon),
+      // icon:BitmapDescriptor.defaultMarkerWithHue(10),
+      markerId: markerId,
+      position: LatLng(position.latitude,position.longitude),
+
+      infoWindow: InfoWindow(
+        title:"on tap",
+      ),
+    );
+
+    setState(() {
+      // adding a new marker to map
+      markers[markerId] = marker;
+    });
+    _getPolyline();
   }
 
   getDistance(){
@@ -76,12 +109,41 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
 
 
   }
+  _addPolyLine() {
+    PolylineId id = PolylineId("poly");
+    Polyline polyline1 = Polyline(
+        polylineId: id, color: Colors.red, points: polylineCoordinates);
+    polyline[id] = polyline1;
+    setState(() {});
+  }
 
+  _getPolyline() async {
+    // print("$googleAPiKey ${currentPosition.latitude}, ${currentPosition.longitude}");
 
+    List<PointLatLng> result = await polylinePoints.getRouteBetweenCoordinates(  googleAPiKey,0, 0,  markers[MarkerId('marker')].position.latitude,  markers[MarkerId('marker')].position.longitude);
+    if (result.isNotEmpty) {
+      result.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+    }
+    _addPolyLine();
+  }
+
+  getCurrentLocation()async{
+    await Geolocator.getCurrentPosition().then((value) => {
+
+      setState(() {
+        print("aaaaaaa $value");
+        currentPosition=LatLng(value.latitude,value.longitude);
+
+      })
+
+    });
+  }
   @override
   void initState() {
 
-
+    getCurrentLocation();
     // TODO: implement initState
     super.initState();
   }
@@ -89,6 +151,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white.withAlpha(55),
@@ -157,16 +220,17 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
             padding: const EdgeInsets.only(top: 125),
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: LatLng(currentPosition.latitude??0,currentPosition.longitude??0),
+                target: LatLng(0,0),
                 zoom: 15.5
 
               ),
               onTap: (position){
-                _addMarker(position);
+                _addMarkerCurrentLocation(position);
               },
               markers: Set<Marker>.of(markers.values),
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
+              polylines: Set<Polyline>.of(polyline.values),
             ),
           ),
           Positioned(
@@ -189,7 +253,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                         // getDistance();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => orderDetails()),
+                          MaterialPageRoute(builder: (context) => CalculatePrice()),
                         );
                       },
                       child: Container(
@@ -415,7 +479,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        showFromTo=!showFromTo;
+                        // showFromTo=!showFromTo;
                       });
                     },
                     child: Container(
@@ -450,7 +514,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        showFromTo=!showFromTo;
+                        // showFromTo=!showFromTo;
                       });
                     },
                     child: Container(
