@@ -25,7 +25,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentIndex = 0;
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{}; // CLASS MEMBER, MAP OF MARKS
-
+bool targetLocationClick=true;
 
 
   Map<PolylineId, Polyline> polyline = {};
@@ -51,9 +51,9 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
   }
 
   Future<void> _addMarkerCurrentLocation(LatLng position) async {
-    var markerIdVal = "marker";
+    var markerIdVal = "current";
     final MarkerId markerId = MarkerId(markerIdVal);
-    markerIcon = await getBytesFromAsset('assets/002-map-marker.png', 100);
+    markerIcon = await getBytesFromAsset('assets/004-marker.png', 100);
     // creating a new MARKER
     final Marker marker = Marker(
       icon: BitmapDescriptor.fromBytes(markerIcon),
@@ -74,7 +74,7 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
   }
 
 
-  Future<void> _addMarkerTagetLocation(LatLng position) async {
+  Future<void> _addMarkerTargetLocation(LatLng position) async {
     var markerIdVal = "target";
     final MarkerId markerId = MarkerId(markerIdVal);
     markerIcon = await getBytesFromAsset('assets/002-map-marker.png', 100);
@@ -97,18 +97,13 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
     _getPolyline();
   }
 
-  getDistance(){
-    if(markers[MarkerId('marker')]!=null){
-     var distance= Geolocator.distanceBetween(currentPosition.latitude, currentPosition.longitude,  markers[MarkerId('marker')].position.latitude,  markers[MarkerId('marker')].position.longitude);
+  getDistance(LatLng firstPosition,LatLng secondPosition){
+
+     var distance= Geolocator.distanceBetween(firstPosition.latitude, firstPosition.longitude,secondPosition.latitude,  secondPosition.longitude);
      print("distance ${distance}");
-    }else{
-      print("else distance ");
-      print(markers['marker']);
-
-    }
-
 
   }
+
   _addPolyLine() {
     PolylineId id = PolylineId("poly");
     Polyline polyline1 = Polyline(
@@ -129,21 +124,11 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
     _addPolyLine();
   }
 
-  getCurrentLocation()async{
-    await Geolocator.getCurrentPosition().then((value) => {
 
-      setState(() {
-        print("aaaaaaa $value");
-        currentPosition=LatLng(value.latitude,value.longitude);
-
-      })
-
-    });
-  }
   @override
   void initState() {
+    _addMarkerCurrentLocation(currentPosition);
 
-    getCurrentLocation();
     // TODO: implement initState
     super.initState();
   }
@@ -220,12 +205,18 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
             padding: const EdgeInsets.only(top: 125),
             child: GoogleMap(
               initialCameraPosition: CameraPosition(
-                target: LatLng(0,0),
+                  target: LatLng(currentPosition.latitude??37.43296265331129,currentPosition.longitude?? -122.08832357078792),
+
                 zoom: 15.5
 
               ),
               onTap: (position){
-                _addMarkerCurrentLocation(position);
+                if(targetLocationClick){
+                  _addMarkerTargetLocation(position);
+                }else{
+                  _addMarkerCurrentLocation(position);
+                }
+
               },
               markers: Set<Marker>.of(markers.values),
               myLocationButtonEnabled: true,
@@ -479,13 +470,14 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
+                        targetLocationClick=false;
                         // showFromTo=!showFromTo;
                       });
                     },
                     child: Container(
                       height: 60,
                       decoration: BoxDecoration(
-                          color: Colors.white,
+                          color:targetLocationClick?Colors.white: primrycolor.withOpacity(.8),
                           borderRadius: BorderRadius.circular(40),
                           border: Border.all(color: primrycolor, width: 3)),
                       child: Row(
@@ -495,12 +487,12 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                           SvgPicture.asset("assets/icons/Sendicon.svg"),
                           Text("From:",
                               style: TextStyle(
-                                  color: primrycolor,
+                                  color:targetLocationClick?primrycolor:Colors.white,
                                   fontSize: 23,
                                   fontWeight: FontWeight.bold)),
-                          Text("mansoura",
+                          Text("${markers[MarkerId('current')].position.latitude.toStringAsFixed(3)} , ${markers[MarkerId('current')].position.longitude.toStringAsFixed(3)}",
                               style: TextStyle(
-                                  color: Colors.blue[400],
+                                  color:targetLocationClick? Colors.blue[400]:Colors.white,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold)),
                           SvgPicture.asset("assets/icons/SearchIcon.svg"),
@@ -514,13 +506,14 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
+                        targetLocationClick=true;
                         // showFromTo=!showFromTo;
                       });
                     },
                     child: Container(
                       height: 60,
                       decoration: BoxDecoration(
-                          color: Colors.white,
+                          color:targetLocationClick?primrycolor.withOpacity(.8):Colors.white,
                           borderRadius: BorderRadius.circular(40),
                           border: Border.all(color: primrycolor, width: 3)),
                       child: Row(
@@ -529,12 +522,12 @@ class _BottomNavBarV2State extends State<BottomNavBarV2> {
                           SvgPicture.asset("assets/icons/ReceiveIcon.svg"),
                           Text("To:",
                               style: TextStyle(
-                                  color: primrycolor,
+                                  color:targetLocationClick?Colors.white:primrycolor,
                                   fontSize: 23,
                                   fontWeight: FontWeight.bold)),
-                          Text("egypt",
+                          Text("${markers[MarkerId('target')].position.latitude.toStringAsFixed(3)} , ${markers[MarkerId('target')].position.longitude.toStringAsFixed(3)}",
                               style: TextStyle(
-                                  color: Colors.blue[400],
+                                  color:targetLocationClick?Colors.white:Colors.blue[400],
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold)),
                           SvgPicture.asset("assets/icons/SearchIcon.svg"),
